@@ -1,0 +1,6 @@
+asgiref==3.8.1
+bcrypt==4.2.0
+Django==5.1.1
+passlib==1.7.4
+psycopg2-binary==2.9.9
+Werkzeug==3.0.4
