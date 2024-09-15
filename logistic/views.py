@@ -31,7 +31,7 @@ def index(request):
             start_date = request.POST.get('start_date')
             end_date = request.POST.get('end_date')
             city = request.POST.get('city')
-            venue = request.POST.get('venue')
+            venue = request.POST.get('veindexnue')
             host = request.POST.get('host')
             organizer = request.POST.get('organizer')
             sector = request.POST.get('sector')

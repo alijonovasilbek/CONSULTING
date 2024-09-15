@@ -1,122 +1,45 @@
+from django.shortcuts import render
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
 from django.db import connections
-from django.utils import timezone
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
-from functools import wraps
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_protect
 
+@csrf_protect
+@require_http_methods(["GET", "DELETE"])
 def consulting(request):
-    return render(request, 'consulting.html')
+    if request.method == "GET":
 
-
-from django.http import JsonResponse
-from django.shortcuts import redirect, render
-from django.db import connections
-from django.utils import timezone
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
-from functools import wraps
-
-def company_code_check(company_code_value):
-    def decorator(view_func):
-        @wraps(view_func)
-        def _wrapped_view(request, *args, **kwargs):
-            if request.user.company_code != company_code_value:
-                return redirect('login')
-            return view_func(request, *args, **kwargs)
-        return _wrapped_view
-    return decorator
-
-
-
-
-
-
-# @login_required
-# @company_code_check("consulting")
-def consulting(request):
-    if request.method == "POST":
-        if 'delete_user' in request.POST:
-            user_id = request.POST.get('id')
-            if user_id and user_id.isdigit():
-                user_id = int(user_id)
-                try:
-                    with connections['consulting'].cursor() as cursor:
-                        cursor.execute("DELETE FROM user WHERE id = %s", [user_id])
-                    return JsonResponse({'status': 'success'})
-                except Exception as e:
-                    return JsonResponse({'status': 'error', 'message': str(e)})
-
-
-
-        return redirect(('consulting'))
-    
-    with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM public.user ORDER BY join_date DESC LIMIT 2 ")
+        with connections['consulting'].cursor() as cursor:
+            cursor.execute("SELECT * FROM public.user ORDER BY join_date DESC LIMIT 4")
             user_list = cursor.fetchall()
 
 
-   
+        with connections['consulting'].cursor() as cursor:
+            cursor.execute("SELECT * FROM about ORDER BY id DESC LIMIT 4")
+            about_list = cursor.fetchall()
 
-    return render(request, 'consulting.html', {
-        # 'user': request.user,
-        'user_list': user_list,
+        with connections['consulting'].cursor() as cursor:
+            cursor.execute("SELECT * FROM teammembership ORDER BY id DESC LIMIT 4")
+            membership_list = cursor.fetchall()
 
-    })
+        return render(request, 'consulting.html', {'users': user_list, 'abouts': about_list, 'memberships': membership_list})
+    
+    elif request.method == "DELETE":
 
+        entity_type = request.GET.get('type')
+        entity_id = request.GET.get('id')
 
+        try:
+            with connections['consulting'].cursor() as cursor:
+                if entity_type == 'user':
+                    cursor.execute("DELETE FROM public.user WHERE id = %s", [entity_id])
+                elif entity_type == 'about':
+                    cursor.execute("DELETE FROM public.about WHERE id = %s", [entity_id])
+                elif entity_type == 'member':
+                    cursor.execute("DELETE FROM public.membership WHERE id = %s", [entity_id])
+                else:
+                    return JsonResponse({'success': False, 'error': 'Invalid entity type'})
 
-# @login_required
-# @company_code_check("logistic")
-# def all_payments(request):
-#     with connections['logistic'].cursor() as cursor:
-#         cursor.execute("SELECT * FROM payments ORDER BY date DESC")
-
-#         payments = cursor.fetchall()
-
-#     return render(request,'all_payments.html',{'payments': payments})
-
-
-# @login_required
-# @company_code_check("logistic")
-# def all_todos(request):
-#     with connections['logistic'].cursor() as cursor:
-#         cursor.execute("SELECT * FROM todos")
-
-#         todos = cursor.fetchall()
-#         user=request.user
-
-#     return render(request,'all_todos.html',{'todos': todos,'user':user})
-
-
-
-# @login_required
-# @company_code_check("logistic")
-# def all_exhibitions(request):
-#     with connections['logistic'].cursor() as cursor:
-#         cursor.execute("SELECT * FROM exhibitions")
-
-#         exhibitions = cursor.fetchall()
-#         user=request.user
-
-#     return render(request,'all_exhibitions.html',{'exhibitions': exhibitions,'user':user})
-
-
-
-
-
-
-@login_required
-@company_code_check("logistic")
-def all_users(request):
-    with connections['logistic'].cursor() as cursor:
-        cursor.execute("SELECT * FROM users")
-
-        users = cursor.fetchall()
-        user=request.user
-
-    return render(request,'all_users.html',{'users': users,'user':user})
-
-
-
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
