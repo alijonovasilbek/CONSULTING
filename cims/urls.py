@@ -7,9 +7,10 @@ from passlib.handlers.django import django_disabled
 from django.conf import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('ceo/', admin.site.urls),
     path('',include('main.urls')),
     path('',include('logistic.urls')),
     path('',include('telegram.urls')),
-    path('', include('consulting.urls'))
+    path('', include('consulting.urls')),
+    path('c/', include('ceo.urls')),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

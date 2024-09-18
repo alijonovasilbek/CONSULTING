@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+
+
+
+{% block content %}
+
+
+    <style>
+        .list-group {
+            margin-left: 30px;
+            margin-right: 30px;
+            margin-top: 60px;
+
+        }
+        .list-group-item {
+            background-color: #191C24;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        .navbar-nav {
+            margin-left: 0; /* Reset margin if needed */
+            margin-right: 0; /* Reset margin if needed */
+        }
+        .navbar-nav .nav-link {
+            margin-left: 0; /* Adjust this as needed */
+            margin-right: 0; /* Adjust this as needed */
+        }
+        .btn-back-to-dashboard {
+            margin-top: 20px; /* Adjust the margin-top as needed */
+        }
+    </style>
+
+    <div class="content">
+
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-secondary navbar-dark">
+                <a href="http://cognilabs.org/" class="navbar-brand mx-4 mb-3" target="_blank">
+                    <h3 class="text-primary">Cognilabs</h3>
+                </a>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0">{{ user.name }}</h6>
+                        <span>{{ user.email }}</span>
+                    </div>
+                </div>
+                <div class="navbar-nav w-100">
+                    <a href="{% url 'user_dashboard' company_code=user.company_code %}" class="nav-item nav-link active" style="margin-left:0; padding-left: 20px; padding-top: 6px;padding-bottom: 6px">Dashboard</a>
+                    {#                    <a class="btn btn-sm btn-primary" href="{% url 'user_dashboard' company_code=user.company_code %}">Back to Dashboard</a>#}
+                </div>
+            </nav>
+        </div>
+        <h2>Messages</h2>
+        <ul class="list-group">
+            {% for message in received_messages %}
+                <li class="list-group-item">
+                    <strong>{{ message.subject }}</strong><br>
+                    <small>From: {{ message.sender.username }} | {{ message.sent_at|date:"d M Y H:i" }}</small><br>
+                    {{ message.body }}<br>
+
+                    <!-- Add the delete button for each message -->
+                    <form method="POST" action="{% url 'delete_message_ceo' message.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </li>
+            {% empty %}
+                <p>No messages</p>
+            {% endfor %}
+        </ul>
+
+        <!-- Link to the user's dashboard -->
+        {#        <a class="btn btn-sm btn-primary" href="{% url 'user_dashboard' company_code=user.company_code %}">Back to Dashboard</a>#}
+    </div>
+{% endblock %}

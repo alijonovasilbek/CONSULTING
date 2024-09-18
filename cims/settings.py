@@ -33,7 +33,8 @@ INSTALLED_APPS = [
     'main',
     'logistic',
     'telegram',
-    'consulting'
+    'consulting',
+    'ceo'
 ]
 
 MIDDLEWARE = [
@@ -133,8 +134,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # settings.py
 AUTH_USER_MODEL = 'main.User'
 
-# settings.py
-# settings.py
 LOGIN_URL = '/login/'
 
 
@@ -143,11 +142,11 @@ LOGIN_URL = '/login/'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
+USE_TZ = True
 
 USE_I18N = True
 
-USE_TZ = True
 
 
 LOGIN_URL = '/'

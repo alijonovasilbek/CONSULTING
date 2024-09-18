@@ -1,10 +1,13 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.db import connections, DatabaseError
-from django.http import JsonResponse
 from django.shortcuts import redirect
 from functools import wraps
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.http import JsonResponse
+from django.db import connections, DatabaseError
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+from datetime import datetime
 
 def company_code_check(company_code_value):
     def decorator(view_func):
@@ -17,119 +20,147 @@ def company_code_check(company_code_value):
     return decorator
 
 
-
-
-@login_required()
+@csrf_exempt
+@login_required
 @company_code_check("telegram")
 def index1(request):
-    if request.method == "POST" and request.POST.get('delete_user', False):
-        user_id = request.POST.get('id')
+    if request.method == "DELETE":
+        try:
+            data = json.loads(request.body)  # Read JSON body
+            item_type = data.get('type')
+            item_id = data.get('id')
 
-        if user_id and user_id.isdigit():
-            user_id = int(user_id)
+            if not item_type or not item_id:
+                return JsonResponse({'status': 'error', 'message': 'Invalid parameters.'})
 
-            try:
-                with connections['telegram'].cursor() as cursor:
-                    cursor.execute("DELETE FROM users WHERE id = %s", [user_id])
-                return JsonResponse({'status': 'success', 'message': 'User deleted successfully!'})
-            except DatabaseError as e:
-                return JsonResponse({'status': 'error', 'message': 'Error deleting user: ' + str(e)})
-        else:
-            return JsonResponse({'status': 'error', 'message': 'Invalid user ID.'})
-        
-    if request.method == "POST" and request.POST.get('delete_test', False):
-        test_id = request.POST.get('id')
+            with connections['telegram'].cursor() as cursor:
+                if item_type == 'user':
+                    cursor.execute("DELETE FROM users WHERE id = %s", [item_id])
+                elif item_type == 'test':
+                    cursor.execute("DELETE FROM test WHERE id = %s", [item_id])
+                elif item_type == 'participation':
+                    cursor.execute("DELETE FROM participation WHERE id = %s", [item_id])
+                else:
+                    return JsonResponse({'status': 'error', 'message': 'Invalid item type.'})
 
-        if test_id and test_id.isdigit():
-            test_id = int(test_id)
+            return JsonResponse({'status': 'success', 'message': f'{item_type.capitalize()} deleted successfully!'})
 
-
-            try:
-                with connections['telegram'].cursor() as cursor:
-                    cursor.execute("DELETE FROM test WHERE id = %s", [test_id])
-                return JsonResponse({'status': 'success', 'message': 'Test deleted successfully!'})
-            except DatabaseError as e:
-                return JsonResponse({'status': 'error', 'message': 'Error deleting test: ' + str(e)})
-        else:
-            return JsonResponse({'status': 'error', 'message': 'Invalid test ID.'})
-        
-
-
-    if request.method == "POST" and request.POST.get('delete_participation', False):
-        p_id = request.POST.get('id')
-
-        if p_id and p_id.isdigit():
-            p_id = int(p_id)
-
-
-            try:
-                with connections['telegram'].cursor() as cursor:
-                    cursor.execute("DELETE FROM participation WHERE id = %s", [p_id])
-                return JsonResponse({'status': 'success', 'message': 'Participation deleted successfully!'})
-            except DatabaseError as e:
-                return JsonResponse({'status': 'error', 'message': 'Error deleting participation: ' + str(e)})
-        else:
-            return JsonResponse({'status': 'error', 'message': 'Invalid participation ID.'})
+        except DatabaseError as e:
+            return JsonResponse({'status': 'error', 'message': 'Error deleting item: ' + str(e)})
 
     if request.method == "GET":
         with connections['telegram'].cursor() as cursor:
-            cursor.execute('SELECT * FROM users LIMIT 3') 
+            cursor.execute('SELECT COUNT(*) FROM users')
+            user_count = cursor.fetchone()[0]
+
+
+        with connections['telegram'].cursor() as cursor:
+            cursor.execute('SELECT COUNT(*) FROM test')
+            test_count = cursor.fetchone()[0]
+
+        with connections['telegram'].cursor() as cursor:
+            cursor.execute('SELECT COUNT(*) FROM participation')
+            participation_count = cursor.fetchone()[0]
+
+        with connections['telegram'].cursor() as cursor:
+            cursor.execute('SELECT * FROM users ORDER BY id DESC LIMIT 4')
             user_list = cursor.fetchall()
-            user=request.user
+
+
         with connections['telegram'].cursor() as cursor:
-            cursor.execute('SELECT * FROM test LIMIT 3')
+            cursor.execute('SELECT * FROM test ORDER BY id DESC LIMIT 4')
             test_list = cursor.fetchall()
+
+
         with connections['telegram'].cursor() as cursor:
-            cursor.execute('SELECT * FROM participation LIMIT 3')
-            participation_list = cursor.fetchall()    
-
-
-        return render(request, 'index1.html', {'user_list': user_list,'user': user, 'test_list': test_list, 'participation_list': participation_list})
+            cursor.execute('SELECT * FROM participation ORDER BY id DESC LIMIT 4')
+            participation_list = cursor.fetchall()
+        current_time=datetime.now()
+        return render(request, 'index1.html', {
+            'user_list': user_list,
+            'test_list': test_list,
+            'participation_list': participation_list,
+            'user_count': user_count,
+            'test_count': test_count,
+            'participation_count': participation_count,
+            'current_time': current_time,
+        })
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 
-
-
+@csrf_exempt
+@require_http_methods(["GET", "DELETE"])
 def get_all_users(request):
     if request.method == "GET":
         with connections['telegram'].cursor() as cursor:
-            cursor.execute('SELECT * FROM users ') 
+            cursor.execute('SELECT * FROM users')
             user_list = cursor.fetchall()
-            user=request.user
+            user = request.user
 
-        return render(request, 'get_all_users.html', {'user_list': user_list, 'user': user})    
-        
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+        return render(request, 'get_all_users.html', {'user_list': user_list, 'user': user})
+
+    elif request.method == "DELETE":
+        try:
+            data = json.loads(request.body)
+            user_id = data.get('id')
+
+            with connections['telegram'].cursor() as cursor:
+                cursor.execute('DELETE FROM users WHERE id = %s', [user_id])
+
+            return JsonResponse({'status': 'success'}, status=200)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
 
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
 def get_all_tests(request):
     if request.method == "GET":
         with connections['telegram'].cursor() as cursor:
-            cursor.execute('SELECT * FROM test ') 
+            cursor.execute('SELECT * FROM test')
             test_list = cursor.fetchall()
-            user=request.user
+            user = request.user
 
-        return render(request, 'get_all_tests.html', {'test_list': test_list, 'user': user})    
-        
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+        return render(request, 'get_all_tests.html', {'test_list': test_list, 'user': user})
+
+    elif request.method == "POST" and request.POST.get('delete_test'):
+        try:
+            test_id = request.POST.get('id')
+
+            with connections['telegram'].cursor() as cursor:
+                cursor.execute('DELETE FROM test WHERE id = %s', [test_id])
+
+            return JsonResponse({'status': 'success'}, status=200)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
 
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
 def get_all_participations(request):
     if request.method == "GET":
         with connections['telegram'].cursor() as cursor:
-            cursor.execute('SELECT * FROM participation ') 
+            cursor.execute('SELECT * FROM participation')
             p_list = cursor.fetchall()
-            user=request.user
+            user = request.user
 
-        return render(request, 'get_all_participations.html', {'participation_list': p_list, 'user': user})    
-        
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+        return render(request, 'get_all_participations.html', {'participation_list': p_list, 'user': user})
 
+    elif request.method == "POST" and request.POST.get('delete_participation'):
+        try:
+            participation_id = request.POST.get('id')
 
+            with connections['telegram'].cursor() as cursor:
+                cursor.execute('DELETE FROM participation WHERE id = %s', [participation_id])
 
+            return JsonResponse({'status': 'success'}, status=200)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-
-
-
-
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)

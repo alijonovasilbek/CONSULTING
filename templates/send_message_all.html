@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <style>
+    input{
+        background-color: black;
+        height: 60px;
+        border: none;
+        color:white;
+        
+    }
+    textarea{
+        background-color: black;
+        margin-left: 18px;
+        border:none;
+        color:white;
+        
+    }
+    form{
+        margin-top: 150px;    
+        margin-left: 90px;
+        margin-right: 90px;
+    
+        padding: 30px;
+        background-color: #191C24;
+        color:white;
+    }
+    h2{
+        color:darkred;
+    }
+    </style>
+
+    <div class="content">
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-secondary navbar-dark">
+                <a href="http://cognilabs.org/" class="navbar-brand mx-4 mb-3" target="_blank">
+                    <h3 class="text-primary">Cognilabs</h3>
+                </a>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0">{{ user.name }}</h6>
+                        <span>{{ user.email }}</span>
+                    </div>
+                </div>
+                <div class="navbar-nav w-100">
+                    <a href="{% url 'user_dashboard' company_code=user.company_code %}" class="nav-item nav-link active" style="margin-left:0; padding-left: 20px; padding-top: 6px;padding-bottom: 6px">Dashboard</a>
+                
+                </div>
+            </nav>
+        </div>
+
+    
+    <form method="POST">
+        <h2>Send Message to All Users</h2>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+    </div>
+
+
+   
+{% endblock %}

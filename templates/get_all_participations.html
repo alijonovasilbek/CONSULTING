@@ -87,41 +87,8 @@
 {#                <input class="form-control bg-dark border-0" type="search" placeholder="Search">#}
 {#            </form>#}
             <div class="navbar-nav align-items-center ms-auto">
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="fa fa-envelope me-lg-2"></i>
-                        <span class="d-none d-lg-inline-flex">Message</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                        <a href="#" class="dropdown-item">
-                            <div class="d-flex align-items-center">
-                                <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
-                                <div class="ms-2">
-                                    <h6 class="fw-normal mb-0">Muhammad Ali send you a message</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                            </div>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item text-center">See all message</a>
-                    </div>
-                </div>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="fa fa-bell me-lg-2"></i>
-                        <span class="d-none d-lg-inline-flex">Notificatin</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item">
-                            <h6 class="fw-normal mb-0">New user added</h6>
-                            <small>15 minutes ago</small>
-                        </a>
-                        <hr class="dropdown-divider">
-                        <a href="#" class="dropdown-item text-center">See all notifications</a>
-                    </div>
-                </div>
+           
+               
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <img class="rounded-circle me-lg-2" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
@@ -224,21 +191,21 @@
 
 <script>
     $(document).on('click', '.delete-participation', function() {
-        var pId = $(this).data('id'); // Get the user ID
+        var pId = $(this).data('id'); // Get the participation ID
         var csrfToken = '{{ csrf_token }}'; // Get the CSRF token
 
         if (confirm('Are you sure you want to delete this participation?')) {
             $.ajax({
-                url: "{% url 'index1' %}", 
+                url: "{% url 'participation' %}",
                 type: 'POST',
                 data: {
                     'id': pId,
-                    'delete_participation': true, 
-                    'csrfmiddlewaretoken': csrfToken 
+                    'delete_participation': true, // Identifying the action
+                    'csrfmiddlewaretoken': csrfToken
                 },
                 success: function(response) {
                     if (response.status === 'success') {
-                        // Remove the user row from the table
+                        // Remove the participation row from the table
                         $('#participation-row-' + pId).remove();
                         alert('Participation deleted successfully!');
                     } else {
