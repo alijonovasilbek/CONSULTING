@@ -182,7 +182,7 @@
                             <th scope="col">Email</th>
                             <th scope="col">Name</th>
                             <th scope="col">Surname</th>
-                            <th scope="col">Password</th>
+                         
                             <th scope="col">Company code</th>
                             <th scope="col">is_active</th>
                             <td><a class="btn btn-sm btn"  style="background-color: darkred;border-color: darkred;color: white" href="{% url 'send_message_to_all' %}">Message to All</a></td>
@@ -197,7 +197,7 @@
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.name }}</td>
                                 <td>{{ user.surname }}</td>
-                                <td>${{ user.password }}</td>
+                             
                                 <td>{{ user.company_code }}</td>
                                 <td>
                                     <button class="btn btn-sm btn-toggle-active {% if user.is_active %}btn-success{% else %}btn-danger{% endif %}"

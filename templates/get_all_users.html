@@ -136,7 +136,16 @@
                                             <td>{{ user.2 }}</td>
                                             <td>{{ user.3 }}</td>
                                             <td>{{ user.4 }}</td>
-                                            <td>{{ user.5 }}</td>
+                                            <td>
+                                                {% if user.5 == 1 %}
+                                                    O'qituvchi
+                                                {% elif user.5 == 2 %}
+                                                    O'quvchi
+                                                {% else %}
+                                                    Noma'lum
+                                                {% endif %}
+                                            </td>
+
                                             <td>{{ user.6 }}</td>
                                             <td>
                                                 <button class="btn btn-danger btn-sm delete-user" data-id="{{ user.0 }}">Delete</button>

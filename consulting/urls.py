@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import consulting, consusers, consabouts, consteammembership, consservices, consconversation, \
-    conscontactmessage, consblogpost, consservicemembership
+from .views import (consulting, consusers, consabouts, consteammembership, consservices, consconversation, \
+    conscontactmessage, consblogpost,
+                    # consservicemembership
+                    )
 
 urlpatterns = [
     path('consulting/', consulting, name='consulting'),
@@ -12,5 +14,5 @@ urlpatterns = [
     path('conscontactmessages/',conscontactmessage,name='conscontactmessages'),
     path('conscomments/',conscontactmessage,name='conscomments'),
     path('consblogposts/',consblogpost,name='consblogposts'),
-    path('consservicememberships/',consservicemembership,name='consservicememberships'),
+    # path('consservicememberships/',consservicemembership,name='consservicememberships'),
 ]

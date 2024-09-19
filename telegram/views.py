@@ -37,9 +37,9 @@ def index1(request):
                 if item_type == 'user':
                     cursor.execute("DELETE FROM users WHERE id = %s", [item_id])
                 elif item_type == 'test':
-                    cursor.execute("DELETE FROM test WHERE id = %s", [item_id])
+                    cursor.execute("DELETE FROM test WHERE testID = %s", [item_id])
                 elif item_type == 'participation':
-                    cursor.execute("DELETE FROM participation WHERE id = %s", [item_id])
+                    cursor.execute("DELETE FROM participation WHERE participationID = %s", [item_id])
                 else:
                     return JsonResponse({'status': 'error', 'message': 'Invalid item type.'})
 
@@ -68,12 +68,12 @@ def index1(request):
 
 
         with connections['telegram'].cursor() as cursor:
-            cursor.execute('SELECT * FROM test ORDER BY id DESC LIMIT 4')
+            cursor.execute('SELECT * FROM test ORDER BY testID DESC LIMIT 4')
             test_list = cursor.fetchall()
 
 
         with connections['telegram'].cursor() as cursor:
-            cursor.execute('SELECT * FROM participation ORDER BY id DESC LIMIT 4')
+            cursor.execute('SELECT * FROM participation ORDER BY participationID DESC LIMIT 4')
             participation_list = cursor.fetchall()
         current_time=datetime.now()
         return render(request, 'index1.html', {
@@ -132,7 +132,7 @@ def get_all_tests(request):
             test_id = request.POST.get('id')
 
             with connections['telegram'].cursor() as cursor:
-                cursor.execute('DELETE FROM test WHERE id = %s', [test_id])
+                cursor.execute('DELETE FROM test WHERE testID = %s', [test_id])
 
             return JsonResponse({'status': 'success'}, status=200)
         except Exception as e:
@@ -157,7 +157,7 @@ def get_all_participations(request):
             participation_id = request.POST.get('id')
 
             with connections['telegram'].cursor() as cursor:
-                cursor.execute('DELETE FROM participation WHERE id = %s', [participation_id])
+                cursor.execute('DELETE FROM participation WHERE participationID = %s', [participation_id])
 
             return JsonResponse({'status': 'success'}, status=200)
         except Exception as e:

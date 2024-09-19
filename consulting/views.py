@@ -335,24 +335,24 @@ def consblogpost(request):
 
 
 
-@login_required
-@company_code_check("consulting")
-def consservicemembership(request):
-    if request.method == "GET":
-        with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM service_teammembership ORDER BY id DESC")
-            service_teammemberships = cursor.fetchall()
-
-        return render(request,'cons_serviceteammembership.html',{'servicememberships': service_teammemberships})
-
-    elif request.method == "DELETE":
-        entity_type = request.GET.get('type')
-        entity_id = request.GET.get('id')
-
-        try:
-            with connections['consulting'].cursor() as cursor:
-                if entity_type == 'servicemember':
-                    cursor.execute("DELETE FROM service_teammembership WHERE id = %s", [entity_id])
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
+# @login_required
+# @company_code_check("consulting")
+# def consservicemembership(request):
+#     if request.method == "GET":
+#         with connections['consulting'].cursor() as cursor:
+#             cursor.execute("SELECT * FROM service_teammembership ORDER BY id DESC")
+#             service_teammemberships = cursor.fetchall()
+#
+#         return render(request,'cons_serviceteammembership.html',{'servicememberships': service_teammemberships})
+#
+#     elif request.method == "DELETE":
+#         entity_type = request.GET.get('type')
+#         entity_id = request.GET.get('id')
+#
+#         try:
+#             with connections['consulting'].cursor() as cursor:
+#                 if entity_type == 'servicemember':
+#                     cursor.execute("DELETE FROM service_teammembership WHERE id = %s", [entity_id])
+#
+#         except Exception as e:
+#             return JsonResponse({'success': False, 'error': str(e)})
