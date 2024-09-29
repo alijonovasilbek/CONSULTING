@@ -24,6 +24,8 @@ def login_view(request):
                         return redirect('index')
                     elif user.company_code == 'consulting':
                         return redirect('consulting')
+                    elif user.company_code == 'service':
+                        return redirect('service_all')
                     else:
                         return redirect('/')
                 else:

@@ -1,6 +1,4 @@
 from django.utils import timezone
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import MessageForm
 from functools import wraps
 from django.shortcuts import render, get_object_or_404
 from main.models import  User
@@ -8,10 +6,8 @@ from  ceo.forms import MessageFormAll,MessageForm
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from .forms import MessageForm
 from main.models import Message
-
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
@@ -186,6 +182,8 @@ def user_dashboard(request, company_code):
         return redirect('ceo')
     elif user.company_code == 'logistic':
         return redirect('index')
+    elif user.company_code=='service':
+        return  redirect('service_all')
     elif user.company_code == 'consulting':
         return redirect('consulting')
     else:

@@ -1,0 +1,104 @@
+{% extends 'service_base.html' %}
+
+
+
+
+{% block content %}
+
+
+    {#     message   #}
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-secondary text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">Message List</h6>
+             
+            </div>
+            <div class="table-responsive">
+                <table class="table text-center align-middle table-bordered table-hover mb-0">
+                    <thead>
+                    <tr class="text-white">
+
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Subject</th>
+                        <th scope="col">Message</th>
+                        <th scope="col">Created At</th>
+                        <th scope="col">Action</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for message in message_list %}
+                        <tr>
+
+                            <td>{{ message.0 }}</td>
+                            <td>{{ message.1 }}</td>
+                            <td>{{ message.2 }}</td>
+                            <td>{{ message.3 }}</td>
+                            <td>{{ message.4 }}</td>
+                            <td>{{ message.5 }}</td>
+
+
+
+
+                            <td>
+                                <button class="btn btn-danger btn-sm delete-item" data-type="message" data-id="{{ message.0 }}">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hammasi yuklangandan keyin barcha o'chirish tugmalarini tanlash
+            document.querySelectorAll('.delete-item').forEach(function (button) {
+                // Har bir o'chirish tugmasiga click hodisasini biriktirish
+                button.addEventListener('click', function () {
+                    const itemId = this.getAttribute('data-id'); // O'chiriladigan element ID si
+                    const itemType = this.getAttribute('data-type'); // Element turi (masalan: user, message va h.k.)
+                    const row = this.closest('tr'); // Joriy element qatorini olish (o'chirilganda DOM dan olib tashlash uchun)
+
+                    // Foydalanuvchidan tasdiqlash so'rash
+                    if (confirm('Bu elementni o‘chirishga ishonchingiz komilmi?')) {
+                        // `fetch` orqali DELETE so'rovini yuborish
+                        fetch(`/service-messages/`, {  // To'g'ri URL manzilini ko'rsatish
+                            method: 'DELETE', // DELETE metodi
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}', // CSRF token (security uchun)
+                                'Content-Type': 'application/json' // JSON turidagi ma'lumot
+                            },
+                            body: JSON.stringify({ type: itemType, id: itemId }) // JSON shaklida yuboriladigan ma'lumotlar
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok'); // Tarmoq javobi noto'g'ri bo'lsa xato tashlash
+                                }
+                                return response.json(); // Javobni JSON ga aylantirish
+                            })
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    row.remove(); // Agar muvaffaqiyatli bo'lsa, DOM dan qatorni olib tashlash
+                                    alert(data.message); // Foydalanuvchiga muvaffaqiyatli xabarni ko'rsatish
+                                } else {
+                                    alert(data.message); // Xato xabarini ko'rsatish
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Xatolik:', error);
+                                alert('Xatolik yuz berdi: ' + error.message); // Xatolik yuz bersa xabar ko'rsatish
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+
+
+{% endblock %}
