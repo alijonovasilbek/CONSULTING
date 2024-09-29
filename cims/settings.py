@@ -34,7 +34,8 @@ INSTALLED_APPS = [
     'logistic',
     'telegram',
     'consulting',
-    'ceo'
+    'ceo',
+    'service'
 ]
 
 MIDDLEWARE = [
@@ -104,6 +105,15 @@ DATABASES = {
         'PASSWORD': '2222',
         'HOST': 'localhost',
         'PORT': '5432',
+    },
+    'service': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'servicedatabase',
+        'USER': 'postgres',
+        'PASSWORD': '2222',
+        'HOST': 'localhost',
+        'PORT': '5432',
+
     },
     
 

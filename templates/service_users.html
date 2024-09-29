@@ -1,0 +1,112 @@
+{% extends 'service_base.html' %}
+
+
+
+
+{% block content %}
+
+    {#     userlist   #}
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-secondary text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">User List</h6>
+            
+            </div>
+            <div class="table-responsive">
+                <table class="table text-center align-middle table-bordered table-hover mb-0">
+                    <thead>
+                    <tr class="text-white">
+
+                        <th scope="col">ID</th>
+                        <th scope="col">Password</th>
+                        <th scope="col">Last Login</th>
+                        <th scope="col">Is Superuser</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Is Staff</th>
+                        <th scope="col">Is Active</th>
+                        <th scope="col">Date Joined</th>
+                        <th scope="col">Action</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in user_list %}
+                        <tr>
+
+                            <td>{{ user.0 }}</td>
+                            <td>{{ user.1 }}</td>
+                            <td>{{ user.2 }}</td>
+                            <td>{{ user.3 }}</td>
+                            <td>{{ user.4 }}</td>
+                            <td>{{ user.5 }}</td>
+                            <td>{{ user.6 }}</td>
+                            <td>{{ user.7 }}</td>
+                            <td>{{ user.8 }}</td>
+                            <td>{{ user.9 }}</td>
+
+                            <td>{{ user.10 }}</td>
+
+
+                            <td>
+                                <button class="btn btn-danger btn-sm delete-item" data-type="user" data-id="{{ user.0 }}">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hammasi yuklangandan keyin barcha o'chirish tugmalarini tanlash
+            document.querySelectorAll('.delete-item').forEach(function (button) {
+                // Har bir o'chirish tugmasiga click hodisasini biriktirish
+                button.addEventListener('click', function () {
+                    const itemId = this.getAttribute('data-id'); // O'chiriladigan element ID si
+                    const itemType = this.getAttribute('data-type'); // Element turi (masalan: user, message va h.k.)
+                    const row = this.closest('tr'); // Joriy element qatorini olish (o'chirilganda DOM dan olib tashlash uchun)
+
+                    // Foydalanuvchidan tasdiqlash so'rash
+                    if (confirm('Bu elementni o‘chirishga ishonchingiz komilmi?')) {
+                        // `fetch` orqali DELETE so'rovini yuborish
+                        fetch(`/service-users/`, {  // To'g'ri URL manzilini ko'rsatish
+                            method: 'DELETE', // DELETE metodi
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}', // CSRF token (security uchun)
+                                'Content-Type': 'application/json' // JSON turidagi ma'lumot
+                            },
+                            body: JSON.stringify({ type: itemType, id: itemId }) // JSON shaklida yuboriladigan ma'lumotlar
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok'); // Tarmoq javobi noto'g'ri bo'lsa xato tashlash
+                                }
+                                return response.json(); // Javobni JSON ga aylantirish
+                            })
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    row.remove(); // Agar muvaffaqiyatli bo'lsa, DOM dan qatorni olib tashlash
+                                    alert(data.message); // Foydalanuvchiga muvaffaqiyatli xabarni ko'rsatish
+                                } else {
+                                    alert(data.message); // Xato xabarini ko'rsatish
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Xatolik:', error);
+                                alert('Xatolik yuz berdi: ' + error.message); // Xatolik yuz bersa xabar ko'rsatish
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+
+
+{% endblock %}

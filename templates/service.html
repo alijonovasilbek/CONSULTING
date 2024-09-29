@@ -1,0 +1,202 @@
+{% extends 'service_base.html' %}
+
+
+
+{% block content %}
+
+    
+    <!-- Sale & Revenue Start -->
+    <div class="container-fluid pt-4 px-4">
+        <div class="row g-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-chart-line fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">Total Users</p>
+                        <h6 class="mb-0"> {{ user_count }}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">Total Messages</p>
+                        <h6 class="mb-0">{{ message_count }}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-chart-area fa-3x text-primary"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">Today Revenue</p>
+                        <h6 class="mb-0">${{ today_revenue }}</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                    <div class="ms-3">
+
+                        <h6 class="mb-0">{{ current_time|date:"F j, Y H:i:s" }}</h6>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {#     userlist   #}
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-secondary text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">User List</h6>
+                <a href="{% url 'service_users' %}">Show All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table text-center align-middle table-bordered table-hover mb-0">
+                    <thead>
+                    <tr class="text-white">
+
+                        <th scope="col">ID</th>
+                        <th scope="col">Password</th>
+                        <th scope="col">Last Login</th>
+                        <th scope="col">Is Superuser</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Is Staff</th>
+                        <th scope="col">Is Active</th>
+                        <th scope="col">Date Joined</th>
+                        <th scope="col">Action</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in user_list %}
+                        <tr>
+
+                            <td>{{ user.0 }}</td>
+                            <td>{{ user.1 }}</td>
+                            <td>{{ user.2 }}</td>
+                            <td>{{ user.3 }}</td>
+                            <td>{{ user.4 }}</td>
+                            <td>{{ user.5 }}</td>
+                            <td>{{ user.6 }}</td>
+                            <td>{{ user.7 }}</td>
+                            <td>{{ user.8 }}</td>
+                            <td>{{ user.9 }}</td>
+
+                            <td>{{ user.10 }}</td>
+
+
+
+                            <td>
+                                <button class="btn btn-danger btn-sm delete-item" data-type="user" data-id="{{ user.0 }}">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    {#     message   #}
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-secondary text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h6 class="mb-0">Message List</h6>
+                <a href="{% url 'service_messages' %}">Show All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table text-center align-middle table-bordered table-hover mb-0">
+                    <thead>
+                    <tr class="text-white">
+
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Subject</th>
+                        <th scope="col">Message</th>
+                        <th scope="col">Created At</th>
+                        <th scope="col">Action</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for message in message_list %}
+                        <tr>
+
+                            <td>{{ message.0 }}</td>
+                            <td>{{ message.1 }}</td>
+                            <td>{{ message.2 }}</td>
+                            <td>{{ message.3 }}</td>
+                            <td>{{ message.4 }}</td>
+                            <td>{{ message.5 }}</td>
+                    
+
+
+
+                            <td>
+                                <button class="btn btn-danger btn-sm delete-item" data-type="message" data-id="{{ message.0 }}">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+           
+            document.querySelectorAll('.delete-item').forEach(function (button) {
+           
+                button.addEventListener('click', function () {
+                    const itemId = this.getAttribute('data-id'); 
+                    const itemType = this.getAttribute('data-type'); 
+                    const row = this.closest('tr'); 
+
+                   
+                    if (confirm('Bu elementni o‘chirishga ishonchingiz komilmi?')) {
+                   
+                        fetch(`/serviceall/`, { 
+                            method: 'DELETE', 
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ type: itemType, id: itemId }) 
+                        }).then(response => response.json()) 
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    row.remove(); 
+                                    alert(data.message); 
+                                } else {
+                                    alert(data.message); 
+                                }
+                            }).catch(error => {
+                            console.error('Xatolik:', error);
+                            alert('Xatolik yuz berdi. Iltimos, qaytadan urinib ko‘ring.'); 
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+
+{% endblock %}
