@@ -24,19 +24,14 @@
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
-
-
-
                     <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
-                    <a href="{% url  'consabouts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>About</a>
+                    <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
+                       <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
                     <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
                     <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
-                    <a href="{% url  'consconversation' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Conversations</a>
-                    <a href="{% url  'conscontactmessages' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Messages</a>
                     <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
                     <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
-{#                    <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
-
+    {#                <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
                 </div>
             </nav>
         </div>
@@ -47,7 +42,7 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                <a href="{% url 'consulting' %}" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
                 </a>
                 {#                <a href="#" class="sidebar-toggler flex-shrink-0">#}
@@ -55,8 +50,7 @@
                 {#                </a>#}
 
                 <div class="navbar-nav align-items-center ms-auto">
-                
-                  
+
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img class="rounded-circle me-lg-2" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
@@ -73,48 +67,49 @@
                 </div>
             </nav>
             <!-- Navbar End -->
-        
+
+
+
             <div class="content-fluid">
                 <div class="container-fluid pt-4 px-4">
                     <div class="row">
                         <div class="col-12">
                             <div class="card" style="background-color: black; color: red;">
                                 <div class="card-body">
-
-                                    <h5 class="card-title">About List</h5>
+                                    <h5 class="card-title">Request History List</h5>
                                     <table class="table">
                                         <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Company Name</th>
-                                            <th>Mission</th>
-                                            <th>Description</th>
-                                            <th>Service Overview</th>
-                                            <th>Team Description</th>
-                                            <th>Phone</th>
-                                            <th>Image</th>
+                                            <th>First Name</th>
+                                            <th>Username</th>
+                                            <th>Chat ID</th>
+                                            <th>Reason</th>
+                                            <th>Staff ID</th>
+                                            <th>Created At</th>
+                                            <th>Closed At</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% for about in abouts %}
-                                            <tr id="about-row-{{ about.0 }}">
-                                                <td>{{ about.0 }}</td>
-                                                <td>{{ about.1 }}</td>
-                                                <td>{{ about.2 }}</td>
-                                                <td>{{ about.3 }}</td>
-                                                <td>{{ about.4 }}</td>
-                                                <td>{{ about.5 }}</td>
-                                                <td>{{ about.6 }}</td>
-                                                <td>{{ about.7 }}</td>
+                                        {% for history in histories %}
+                                            <tr id="message-row-{{ history.0 }}">
+                                                <td>{{ history.0 }}</td>
+                                                <td>{{ history.1 }}</td>
+                                                <td>{{ history.2 }}</td>
+                                                <td>{{ history.3 }}</td>
+                                                <td>{{ history.4 }}</td>
+                                                <td>{{ history.5 }}</td>
+                                                <td>{{ history.6 }}</td>
+                                                <td>{{ history.7 }}</td>
+
                                                 <td>
-                                                    <button class="btn btn-danger btn-sm delete-entity" data-type="about" data-id="{{ about.0 }}">Delete</button>
+                                                    <button class="btn btn-danger btn-sm delete-entity" data-type="history" data-id="{{ history.0 }}">Delete</button>
                                                 </td>
                                             </tr>
                                         {% endfor %}
                                         </tbody>
                                     </table>
-
 
                                 </div>
                             </div>
@@ -125,40 +120,38 @@
 
 
 
-
             <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    document.querySelectorAll('.delete-entity').forEach(function (button) {
-                        button.addEventListener('click', function () {
-                            let entityId = this.getAttribute('data-id');
-                            let entityType = this.getAttribute('data-type');
-                            let row = this.closest('tr'); // O'chirilgan qatorni olish
+              document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.delete-entity').forEach(function (button) {
+        button.addEventListener('click', function () {
+            let entityId = this.getAttribute('data-id');
+            let entityType = this.getAttribute('data-type');
+            let row = this.closest('tr'); // O'chirilgan qatorni olish
 
-                            if (confirm('Are you sure you want to delete this item?')) {
-                                fetch(`/consulting/?type=${entityType}&id=${entityId}`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'X-CSRFToken': '{{ csrf_token }}',
-                                        'Content-Type': 'application/json'
-                                    }
-                                }).then(response => response.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            row.remove(); // Qatorni DOMdan olib tashlash
-                                            alert('Item successfully deleted!');
-                                        } else {
-                                            alert('Failed to delete item.');
-                                        }
-                                    }).catch(error => {
-                                    alert('An error occurred. Please try again.');
-                                });
-                            }
-                        });
-                    });
-                });
+            if (confirm('Are you sure you want to delete this item?')) {
+                fetch(`/conshistory/?type=${entityType}&id=${entityId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',  // CSRF tokenni o'z ichiga oladi
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          row.remove(); // Qatorni DOMdan olib tashlash
+                          alert('Item successfully deleted!');
+                      } else {
+                          alert('Failed to delete item.');
+                      }
+                  }).catch(error => {
+                      alert('An error occurred. Please try again.');
+                  });
+            }
+        });
+    });
+});
+
             </script>
-
-
 
 
         </div>

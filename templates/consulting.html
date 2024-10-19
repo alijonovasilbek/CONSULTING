@@ -48,15 +48,11 @@
             </div>
             <div class="navbar-nav w-100">
                 <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
-
-
-
                 <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
-                <a href="{% url  'consabouts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>About</a>
+                <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
+                   <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
                 <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
                 <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
-                <a href="{% url  'consconversation' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Conversations</a>
-                <a href="{% url  'conscontactmessages' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Messages</a>
                 <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
                 <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
 {#                <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
@@ -70,7 +66,7 @@
     <div class="content">
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-            <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+            <a href="{% url 'consulting' %}" class="navbar-brand d-flex d-lg-none me-4">
                 <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
             </a>
 {#                <a href="#" class="sidebar-toggler flex-shrink-0">#}
@@ -165,17 +161,18 @@
                     <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
                         <i class="fa fa-chart-area fa-3x text-primary"></i>
                         <div class="ms-3">
-                            <p class="mb-2">Today Revenue</p>
-                            <h6 class="mb-0">${{ today_revenue }}</h6>
+                            <p class="mb-2">Total request</p>
+                            <h6 class="mb-0">{{ total_request }}</h6>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-xl-3">
+                  <div class="col-sm-6 col-xl-3">
                     <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
                         <i class="fa fa-chart-pie fa-3x text-primary"></i>
                         <div class="ms-3">
-                            <p class="mb-2">Total Revenue</p>
-                            <h6 class="mb-0">${{ total_revenue }}</h6>
+
+                            <h5 class="mb-0">{{ current_time|date:"F j, Y H:i:s" }}</h5>
+
                         </div>
                     </div>
                 </div>
@@ -242,53 +239,7 @@
                                 </div>
 
 
-                                <div class="container-fluid pt-4 px-4">
-                                    <div class="bg-secondary text-center rounded p-4">
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <h6 class="mb-0">About List</h6>
-                                            <a href="{% url 'consabouts' %}">Show All</a>
-                                        </div>
-                                        <div class="table-responsive">
-                                            <table class="table text-start align-middle table-bordered table-hover mb-0">
-                                                <thead>
-                                                <tr class="text-white">
-                                                    {#                                                    <th scope="col"><input class="form-check-input" type="checkbox"></th>#}
-                                                    <th scope="col">ID</th>
-                                                    <th scope="col">Company Name</th>
-                                                    <th scope="col">Mission</th>
-                                                    <th scope="col">Description</th>
-                                                    <th scope="col">Service Overview</th>
-                                                    <th scope="col">Team Description</th>
-                                                    <th scope="col">Phone</th>
-                                                    <th scope="col">Image</th>
-                                                    <th scope="col">Action</th>
-                                                    
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                {% for about in abouts %}
-                                                    <tr>
-                                                        {#                                                        <td><input class="form-check-input" type="checkbox"></td>#}
-                                                        <td>{{ about.0 }}</td>
-                                                        <td>{{ about.1 }}</td>
-                                                        <td>{{ about.2 }}</td>
-                                                        <td>{{ about.3 }}</td>
-                                                        <td>${{ about.4 }}</td>
-                                                        <td>{{ about.5 }}</td>
-                                                        <td>{{ about.6 }}</td>
-                                                        <td>{{ about.7 }}</td>
-                                                 
-                                                        <td>
-                                                            <button class="btn btn-danger btn-sm delete-entity" data-type="about" data-id="{{ about.0 }}">Delete</button>
-                                                        </td>
-                                                        
-                                                    </tr>
-                                                {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                         
 
 
 
@@ -481,45 +432,7 @@
 
 
 
-                                <div class="container-fluid pt-4 px-4">
-                                    <div class="bg-secondary text-center rounded p-4">
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <h6 class="mb-0">Conversation List</h6>
-                                            <a href="{% url 'consconversation' %}">Show All</a>
-                                        </div>
-                                        <div class="table-responsive">
-                                            <table class="table text-start align-middle table-bordered table-hover mb-0">
-                                                <thead>
-                                                <tr class="text-white">
-                                                    <th scope="col">ID</th>
-                                                    <th scope="col">User Id</th>
-                                                    <th scope="col">Staff Id</th>
-                                                    <th scope="col">File</th>
-                                                    <th scope="col">Created At</th>
-                                                    <th scope="col">Action</th>
-
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                {% for conversation in conversations %}
-                                                    <tr>
-                                                        <td>{{ conversation.0 }}</td>
-                                                        <td>{{ conversation.1 }}</td>
-                                                        <td>{{ conversation.2 }}</td>
-                                                        <td>{{ conversation.3 }}</td>
-                                                        <td>${{ conversation.4 }}</td>
-                                                        <td>
-                                                            <button class="btn btn-danger btn-sm delete-entity" data-type="conversation" data-id="{{ conversation.0 }}">Delete</button>
-                                                        </td>
-
-                                                    </tr>
-                                                {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-
+            
                              
                             </div>
                         </div>

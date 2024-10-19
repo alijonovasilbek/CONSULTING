@@ -24,18 +24,14 @@
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
-
-
-
                     <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
-                    <a href="{% url  'consabouts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>About</a>
+                    <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
+                       <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
                     <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
                     <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
-                    <a href="{% url  'consconversation' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Conversations</a>
-                    <a href="{% url  'conscontactmessages' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Messages</a>
                     <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
                     <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
-{#                    <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
+    {#                <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
 
                 </div>
             </nav>
@@ -47,7 +43,7 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                <a href="{% url 'consulting' %}" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
                 </a>
                 {#                <a href="#" class="sidebar-toggler flex-shrink-0">#}
@@ -75,7 +71,6 @@
 
 
             <!-- Sale & Revenue Start -->
-
             <div class="content-fluid">
                 <div class="container-fluid pt-4 px-4">
                     <div class="row">
@@ -109,7 +104,13 @@
                                                 <td>{{ user.5 }}</td>
                                                 <td>{{ user.6 }}</td>
                                                 <td>{{ user.7 }}</td>
-                                                <td>{{ user.8 }}</td>
+                                                <td>
+                                                    {% if user.8 %}
+                                                        <button class="btn btn-success btn-sm toggle-staff" data-id="{{ user.0 }}" data-status="true">True</button>
+                                                    {% else %}
+                                                        <button class="btn btn-danger btn-sm toggle-staff" data-id="{{ user.0 }}" data-status="false">False</button>
+                                                    {% endif %}
+                                                </td>
                                                 <td>
                                                     <button class="btn btn-danger btn-sm delete-entity" data-type="user" data-id="{{ user.0 }}">Delete</button>
                                                 </td>
@@ -117,14 +118,13 @@
                                         {% endfor %}
                                         </tbody>
                                     </table>
-
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
 
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
@@ -157,6 +157,42 @@
                     });
                 });
             </script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.toggle-staff').forEach(function (button) {
+        button.addEventListener('click', function () {
+            let userId = this.getAttribute('data-id');
+            let currentStatus = this.getAttribute('data-status');
+            let newStatus = (currentStatus === 'true') ? 'false' : 'true';
+
+            fetch(`/consusers/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    new_status: newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.textContent = (newStatus === 'true') ? 'True' : 'False';
+                    this.classList.toggle('btn-success', newStatus === 'true');
+                    this.classList.toggle('btn-danger', newStatus === 'false');
+                    this.setAttribute('data-status', newStatus);
+                } else {
+                    alert('Error updating user status');
+                }
+            });
+        });
+    });
+});
+</script>
 
         </div>
 
