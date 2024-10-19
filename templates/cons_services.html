@@ -24,18 +24,14 @@
                 </div>
                 <div class="navbar-nav w-100">
                     <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
-
-
-
                     <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
-                    <a href="{% url  'consabouts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>About</a>
+                    <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
+                       <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
                     <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
                     <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
-                    <a href="{% url  'consconversation' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Conversations</a>
-                    <a href="{% url  'conscontactmessages' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Messages</a>
                     <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
                     <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
-{#                    <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
+    {#                <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
 
                 </div>
             </nav>
@@ -47,7 +43,7 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                <a href="{% url 'consulting' %}" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
                 </a>
                 {#                <a href="#" class="sidebar-toggler flex-shrink-0">#}

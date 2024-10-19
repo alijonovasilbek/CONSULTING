@@ -43,15 +43,15 @@ def service_all(request):
 
             with connections['service'].cursor() as cursor:
                 if item_type == 'user':
-                    cursor.execute("DELETE FROM User WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "User" WHERE id = %s', [item_id])
                 elif item_type == 'message':
-                    cursor.execute("DELETE FROM ContactMessage WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "ContactMessage" WHERE id = %s', [item_id])
                 elif item_type == 'profile':
-                    cursor.execute("DELETE FROM UserProfile WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "UserProfile" WHERE id = %s', [item_id])
                 elif item_type == 'referral':
-                    cursor.execute("DELETE FROM Referral WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "Referral" WHERE id = %s', [item_id])
                 elif item_type == 'referred':
-                    cursor.execute("DELETE FROM Referred WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "Referred" WHERE id = %s', [item_id])
                 else:
                     return JsonResponse({'status': 'error', 'message': 'Invalid item type.'})
 
@@ -64,34 +64,34 @@ def service_all(request):
 
 
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT * FROM ContactMessage ORDER BY id DESC LIMIT 4')
+            cursor.execute('SELECT * FROM "ContactMessage" ORDER BY id DESC LIMIT 4')
             message_list = cursor.fetchall()
 
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT * FROM User ORDER BY id DESC LIMIT 4')
+            cursor.execute('SELECT * FROM "User" ORDER BY id DESC LIMIT 4')
             user_list = cursor.fetchall()
 
 
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT * FROM UserProfile ORDER BY id DESC LIMIT 4')
+            cursor.execute('SELECT * FROM "UserProfile" ORDER BY id DESC LIMIT 4')
             profile_list = cursor.fetchall()
 
 
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT * FROM Referral ORDER BY id DESC LIMIT 4')
+            cursor.execute('SELECT * FROM "Referral" ORDER BY id DESC LIMIT 4')
             referral_list = cursor.fetchall()
 
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT * FROM Referred ORDER BY id DESC LIMIT 4;')
+            cursor.execute('SELECT * FROM "Referred" ORDER BY id DESC LIMIT 4;')
             referred_list = cursor.fetchall()
 
 
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT COUNT(*) FROM User')
+            cursor.execute('SELECT COUNT(*) FROM "User"')
             user_count = cursor.fetchone()[0]
 
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT COUNT(*) FROM ContactMessage')
+            cursor.execute('SELECT COUNT(*) FROM "ContactMessage"')
             message_count = cursor.fetchone()[0]
 
 
@@ -119,7 +119,7 @@ def service_all(request):
 def service_users(request):
     if request.method == "GET":
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT * FROM User')
+            cursor.execute('SELECT * FROM "User"')
             user_list = cursor.fetchall()
             user = request.user
 
@@ -136,7 +136,7 @@ def service_users(request):
 
             with connections['service'].cursor() as cursor:
                 if item_type == 'user':
-                    cursor.execute("DELETE FROM User WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "User" WHERE id = %s', [item_id])
                 else:
                     return JsonResponse({'status': 'error', 'message': 'Invalid item type.'})
 
@@ -156,7 +156,7 @@ def service_users(request):
 def service_messages(request):
     if request.method == "GET":
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT * FROM ContactMessage ')
+            cursor.execute('SELECT * FROM "ContactMessage" ')
             message_list = cursor.fetchall()
             user = request.user
 
@@ -173,7 +173,7 @@ def service_messages(request):
 
             with connections['service'].cursor() as cursor:
                 if item_type == 'message':
-                    cursor.execute("DELETE FROM ContactMessage WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "ContactMessage" WHERE id = %s', [item_id])
                 else:
                     return JsonResponse({'status': 'error', 'message': 'Invalid item type.'})
 
@@ -194,8 +194,8 @@ def service_profiles(request):
     if request.method == "GET":
         with connections['service'].cursor() as cursor:
             cursor.execute('''SELECT p.id, u.username, p.prize_inviting, p.profile_picture
-            FROM UserProfile p
-            JOIN User u ON p.user_id = u.id''')
+            FROM "UserProfile" p
+            JOIN "User" u ON p.user_id = u.id''')
             profile_list = cursor.fetchall()
             user = request.user
 
@@ -212,7 +212,7 @@ def service_profiles(request):
 
             with connections['service'].cursor() as cursor:
                 if item_type == 'profile':  # 'message' o'rniga 'userprofile' kiritildi
-                    cursor.execute("DELETE FROM UserProfile WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "UserProfile" WHERE id = %s', [item_id])
                 else:
                     return JsonResponse({'status': 'error', 'message': 'Invalid item type.'})
 
@@ -231,7 +231,7 @@ def service_profiles(request):
 def service_referrals(request):
     if request.method == "GET":
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT r.id, u.username, r.referral_code, r.created_at FROM Referral r JOIN User u ON r.user_id = u.id')
+            cursor.execute('SELECT r.id, u.username, r.referral_code, r.created_at FROM "Referral" r JOIN "User" u ON r.user_id = u.id')
             referral_list = cursor.fetchall()
             user = request.user
 
@@ -248,7 +248,7 @@ def service_referrals(request):
 
             with connections['service'].cursor() as cursor:
                 if item_type == 'referral':
-                    cursor.execute("DELETE FROM Referral WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "Referral" WHERE id = %s', [item_id])
                 else:
                     return JsonResponse({'status': 'error', 'message': 'Invalid item type.'})
 
@@ -267,7 +267,7 @@ def service_referrals(request):
 def service_referreds(request):
     if request.method == "GET":
         with connections['service'].cursor() as cursor:
-            cursor.execute('SELECT r.id , u.username, r.referred_by_id , r.date_invited FROM Referred r JOIN User u ON r.user_id = u.id')
+            cursor.execute('SELECT r.id , u.username, r.referred_by_id , r.date_invited FROM "Referred" r JOIN "User" u ON r.user_id = u.id')
             referred_list = cursor.fetchall()
             user = request.user
 
@@ -284,7 +284,7 @@ def service_referreds(request):
 
             with connections['service'].cursor() as cursor:
                 if item_type == 'referred':
-                    cursor.execute("DELETE FROM Referred WHERE id = %s", [item_id])
+                    cursor.execute('DELETE FROM "Referred" WHERE id = %s', [item_id])
                 else:
                     return JsonResponse({'status': 'error', 'message': 'Invalid item type.'})
 
