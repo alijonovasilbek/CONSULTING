@@ -120,6 +120,49 @@ def consulting(request):
             return JsonResponse({'success': False, 'error': str(e)})
 
 
+@login_required
+@company_code_check("consulting")
+def consuseradd(request):
+    if request.method == "POST":
+        try:
+            # Foydalanuvchidan kelayotgan POST so'rovidagi ma'lumotlarni olish
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            phone_number = request.POST.get('phone_number')
+            profile_picture = request.POST.get('profile_picture', None)
+            is_superuser = request.POST.get('is_superuser') == 'on'  # Checkbox dan keladigan qiymatni olish
+            is_staff = request.POST.get('is_staff') == 'on'  # Checkbox dan keladigan qiymat
+
+            # Foydalanuvchini ma'lumotlar bazasiga qo'shish
+            with connections['consulting'].cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO public.user 
+                    (first_name, last_name, email, phone_number, profile_picture, is_superuser, is_staff, join_date)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, NOW())
+                """, [first_name, last_name, email, phone_number, profile_picture, is_superuser, is_staff])
+
+            return render(request,'consulting.html')
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return render(request, 'cons_add_staff.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @login_required
 @company_code_check("consulting")
@@ -407,3 +450,8 @@ def telegrammessage(request):
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
+        
+
+
+
+
