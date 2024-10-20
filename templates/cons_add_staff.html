@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid position-relative d-flex p-0">
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-secondary navbar-dark">
+                <a href="http://cognilabs.org/" class="navbar-brand mx-4 mb-3" target="_blank">
+                    <h3 class="text-primary">Cognilabs</h3>
+                </a>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0">{{ user.name }}</h6>
+                        <span>{{ user.email}}</span>
+                    </div>
+                </div>
+                <div class="navbar-nav w-100">
+                    <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
+                    <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
+                    <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
+                       <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
+                    <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
+                    <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
+                    <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
+                    <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
+    {#                <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
+                </div>
+            </nav>
+        </div>
+     
+        <div class="content">
+            <!-- Navbar Start -->
+            <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                <!-- Navbar content here -->
+            </nav>
+    
+            <div class="container mt-4">
+                <h1 class="mb-4">Add New User</h1>
+                <form method="POST" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" class="form-control custom-input" id="first_name" name="first_name" required>
+                            <div class="invalid-feedback">
+                                Please provide a first name.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control custom-input" id="last_name" name="last_name" required>
+                            <div class="invalid-feedback">
+                                Please provide a last name.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control custom-input" id="email" name="email" required>
+                            <div class="invalid-feedback">
+                                Please provide a valid email.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="phone_number" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control custom-input" id="phone_number" name="phone_number" required>
+                            <div class="invalid-feedback">
+                                Please provide a valid phone number.
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="profile_picture" class="form-label">Profile Picture URL</label>
+                            <input type="text" class="form-control custom-input" id="profile_picture" name="profile_picture">
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input custom-checkbox" type="checkbox" id="is_superuser" name="is_superuser">
+                                <label class="form-check-label" for="is_superuser">Is Superuser</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input custom-checkbox" type="checkbox" id="is_staff" name="is_staff">
+                                <label class="form-check-label" for="is_staff">Is Staff</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                    </div>
+                </form>
+            </div>
+       
+        </div>
+      
+    </div>
+
+    <style>
+
+        .custom-input {
+            background-color: #d3d3d3;  
+            border: 1px solid #ccc;
+            color: #110e0e;
+        }
+        .custom-input:focus {
+            background-color: #c0c0c0;
+            border-color: #404040;
+            color:#110e0e
+        }
+
+
+        .custom-checkbox {
+            background-color: #545353;  
+            border: 1px solid #444;
+            color:#110e0e
+        }
+    </style>
+
+    <script>
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+
+{% endblock %}
