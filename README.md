@@ -28,8 +28,10 @@ Make sure you have the following installed:
 
 2. Navigate to the project directory:
      cd CIMS
-3. Install the required dependencies:
-     pip install -r requirements.txt
 
-     
+
+
+     ![Botning rasmi](  https://github.com/alijonovasilbek/CONSULTING/blob/main/templates/Screenshot_2024-10-18_15_36_34.png
+)
+
    
