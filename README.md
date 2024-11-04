@@ -21,13 +21,6 @@ Make sure you have the following installed:
 - Django 
 - pip
 
-### Steps to Install
-
-1. Clone the repository:
-   ```bash
-
-2. Navigate to the project directory:
-     cd CIMS
 
 
 
